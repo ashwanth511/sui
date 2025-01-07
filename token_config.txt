@@ -1,0 +1,91 @@
+# Deploy the contract and save the Package ID
+sui client publish --gas-budget 100000000
+
+ote: After deployment, note the Package ID from the output.
+
+   # List all objects and manually find the Treasury Cap ID
+   sui client objects
+
+Look for an object with a type that includes TreasuryCap.
+2. Mint Tokens:
+
+
+   # Replace with your actual IDs and desired amount
+   sui client call \
+       --package $PACKAGE_ID \
+       --module bits \
+       --function mint \
+       --args $TREASURY_CAP_ID "1000000000000" $YOUR_ADDRESS \
+       --gas-budget 100000000
+
+Replace:
+$PACKAGE_ID with your package ID.
+$TREASURY_CAP_ID with your treasury cap ID.
+$YOUR_ADDRESS with your wallet address.
+3. Find BITS Coin ID:
+Look for an object with a type that includes BITS.
+   # List all objects and manually find the BITS Coin ID
+   sui client objects
+
+
+Step 3: Create a Pool
+1. Create Pool:
+   # Example values for token price, min/max purchase, and burn percentage
+   sui client call \
+       --package $PACKAGE_ID \
+       --module launchpad \
+       --function create_pool \
+       --args $TREASURY_CAP_ID $TONY_COIN_ID "100000000000" "1000000000" "10000000000" "1000" \
+       --gas-budget 100000000
+
+2. Find Pool ID:
+
+   # List all objects and manually find the Pool ID
+   sui client objects
+
+
+Look for an object with a type that includes Pool.
+Step 4: Activate the Pool
+sui client call \
+    --package $PACKAGE_ID \
+    --module launchpad \
+    --function set_pool_status \
+    --args $POOL_ID true \
+    --gas-budget 100000000
+
+
+
+Replace:
+$POOL_ID with your pool ID.
+Step 5: Allow Others to Buy Tokens
+Share the following command with buyers:
+
+
+sui client call \
+    --package $PACKAGE_ID \
+    --module launchpad \
+    --function buy_tokens \
+    --args $POOL_ID $SUI_COIN_ID \
+    --gas-budget 100000000
+
+
+Replace:
+$SUI_COIN_ID with the buyer's SUI coin ID.
+Step 6: End the Pool (Optional)
+When you're ready to end the pool:
+
+sui client call \
+    --package $PACKAGE_ID \
+    --module launchpad \
+    --function end_pool \
+    --args $POOL_ID \
+    --gas-budget 100000000
+    
+Important Tips
+Track IDs: After each transaction, use sui client objects to get the latest object IDs.
+Save IDs: Keep a record of important IDs like Package ID, Treasury Cap ID, BITS Coin ID, and Pool ID.
+Merge Coins: If you have multiple coins, merge them using sui client merge-coin.
+Quick Commands to Check Objects:
+Check Object Details:
+Merge Coins (if needed):
+By following these steps and keeping track of your object IDs, you should be able to avoid the "object deleted" issue. If you need further clarification on any step, feel free to ask! 😊
